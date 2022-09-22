@@ -8,10 +8,17 @@
         Heropy's Notion
       </h2>
     </div>
-    <div class="workspaces"></div>
+    <ul class="workspaces">
+      <WorkspaceItem 
+        v-for="workspace in workspaceStore.workspaces"
+        :key="workspace.id" 
+        :workspace="workspace" />
+    </ul>
     <div class="actions">
       <p>현재 게스트로 사용 중입니다. 모든 워크스페이스 페이지를 보려면 관리자에게 요청해 멤버로 업그레이드하세요.</p>
-      <div class="action">
+      <div 
+        class="action"
+        @click="createWorkspace">
         <i class="fa-solid fa-plus"></i>
         워크스페이스 생성
       </div>
@@ -20,34 +27,52 @@
         워크스페이스 삭제 되돌리기
       </div>
     </div>
+    <div 
+      ref="resizeHandle"
+      class="resize-handle"
+      @dblclick="navWidth = 260"></div>
   </nav>
 </template>
 
 <script>
 import interact from 'interactjs'
+import { mapStores } from 'pinia'
+import { useWorkspaceStore } from '~/store/workspace'
+import WorkspaceItem from '~/components/WorkspaceItem.vue'
 
 export default {
+  components: { 
+    WorkspaceItem 
+  },  
   data() {
     return {
       navWidth: 260 // js data로 길이 조절
     }
   },
-  mounted() { // initResize()는 html 구조를 활용하기 때문에 created(x) 대신 mounted(o) 사용
+  computed: {
+    ...mapStores(useWorkspaceStore)
+  },
+  mounted() {
     this.initResize()
   },
   methods: {
-    initResize() { 
+    initResize() {
       interact(this.$refs.nav)
         .resizable({
-          edges: { // resizing 사용할 테두리 
-            right: true // 오른쪽만 사용함.
-          }
-        })
+        edges: {
+          // right: true // 오른쪽만 사용함.
+          right: this.$refs.resizeHandle
+        }
+      })
         // 움직이고 있을때,
-        .on('resizemove', e => { 
+        .on('resizemove', e => {
           // console.log(e.rect) // 크기 확인
           this.navWidth = e.rect.width // 바뀐 크기를 navWidth에 할당.
         })
+    },
+    async createWorkspace() {
+      const workspace = await this.workspaceStore.createWorkspace()
+      this.$router.push(`/workspaces/${workspace.id}`)
     }
   }
 }

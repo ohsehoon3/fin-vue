@@ -3,13 +3,32 @@ import axios from 'axios'
 
 export const useWorkspaceStore = defineStore('workspace', {
   state: () => ({ // state는 함수로 객체 반환해야 함.
-    
+    workspaces: [],
+    workspace: {}
   }),
   actions: {
-    readWorkspaces() {
-      request({
-        method: 'GET',
+    async readWorkspaces() {
+      this.workspaces = await request({
+        method: 'GET'
       })
+    },
+    async readWorkspace(id) {
+      this.workspace = await request({
+        method: 'GET',
+        id
+      })
+    },
+    async createWorkspace(payload = {}) {
+      const { parentId } = payload
+      const workspace = await request({
+        method: 'POST',
+        body: {
+          parentId,
+          title: ''
+        }
+      })
+      this.readWorkspaces()
+      return workspace
     }
   }
 })
@@ -23,10 +42,11 @@ async function request(options) {
     headers: {
       'content-type': 'application/json',
       'apikey': 'FinTech202207',
-      'username': 'ParkYoungWoong'
+      'username': 'OhSeHoon'
     },
     data: body
   })
 
   console.log(data)
+  return data
 }

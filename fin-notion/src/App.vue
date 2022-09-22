@@ -35,7 +35,6 @@ main {
   height: 100vh; 
   .workspace {
     flex-grow: 1;
-    border: 10px solid red;
   } 
 }
 </style>
