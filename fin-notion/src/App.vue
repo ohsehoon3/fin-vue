@@ -1,10 +1,6 @@
 <template>
   <main>
-    <nav>
-      <div class="title"></div>
-      <ul></ul>
-      <div class="actions"></div>
-    </nav>
+    <LNB />
     <div class="workspace">
       <header></header>
       <div class="workspace__contents">
@@ -18,8 +14,12 @@
 <script>
 import { mapStores } from 'pinia'
 import { useWorkspaceStore } from './store/workspace'
+import LNB from './components/LNB.vue'
 
 export default {
+  components: {
+    LNB
+  },
   computed: {
     ...mapStores(useWorkspaceStore)
   },
@@ -32,26 +32,7 @@ export default {
 <style scoped lang="scss">
 main {
   display: flex;
-  height: 100vh;
-  nav {
-    flex-shrink: 0;
-    width: 260px;
-    border: 10px solid;
-    display: flex;
-    flex-direction: column;
-    .title {
-      height: 80px;
-      border: 10px solid red;
-    }
-    ul {
-      flex-grow: 1;
-      border: 10px solid green;
-    }
-    .actions {
-      height: 150px;
-      border: 10px solid orange;
-    }
-  }
+  height: 100vh; 
   .workspace {
     flex-grow: 1;
     border: 10px solid red;
