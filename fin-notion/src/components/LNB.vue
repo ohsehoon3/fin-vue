@@ -1,6 +1,6 @@
 <template>
-  <nav 
-    ref="nav" 
+  <nav
+    ref="nav"
     :style="{ width: `${navWidth}px` }">
     <div class="header">
       <div class="user-profile"></div>
@@ -9,14 +9,14 @@
       </h2>
     </div>
     <ul class="workspaces">
-      <WorkspaceItem 
+      <WorkspaceItem
         v-for="workspace in workspaceStore.workspaces"
-        :key="workspace.id" 
+        :key="workspace.id"
         :workspace="workspace" />
     </ul>
     <div class="actions">
       <p>현재 게스트로 사용 중입니다. 모든 워크스페이스 페이지를 보려면 관리자에게 요청해 멤버로 업그레이드하세요.</p>
-      <div 
+      <div
         class="action"
         @click="createWorkspace">
         <i class="fa-solid fa-plus"></i>
@@ -27,7 +27,7 @@
         워크스페이스 삭제 되돌리기
       </div>
     </div>
-    <div 
+    <div
       ref="resizeHandle"
       class="resize-handle"
       @dblclick="navWidth = 260"></div>
@@ -41,17 +41,17 @@ import { useWorkspaceStore } from '~/store/workspace'
 import WorkspaceItem from '~/components/WorkspaceItem.vue'
 
 export default {
-  components: { 
-    WorkspaceItem 
-  },  
+  components: {
+    WorkspaceItem
+  },
   data() {
     return {
-      navWidth: 260 // js data로 길이 조절
+      navWidth: 260
     }
   },
   computed: {
     ...mapStores(useWorkspaceStore)
-  },
+  }, 
   mounted() {
     this.initResize()
   },
@@ -59,15 +59,12 @@ export default {
     initResize() {
       interact(this.$refs.nav)
         .resizable({
-        edges: {
-          // right: true // 오른쪽만 사용함.
-          right: this.$refs.resizeHandle
-        }
-      })
-        // 움직이고 있을때,
-        .on('resizemove', e => {
-          // console.log(e.rect) // 크기 확인
-          this.navWidth = e.rect.width // 바뀐 크기를 navWidth에 할당.
+          edges: {
+            right: this.$refs.resizeHandle
+          }
+        })
+        .on('resizemove', event => {
+          this.navWidth = event.rect.width
         })
     },
     async createWorkspace() {
@@ -79,7 +76,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-// @import '~/scss/main.scss' // scss생략가능
 nav {
   max-width: 500px;
   min-width: 160px;

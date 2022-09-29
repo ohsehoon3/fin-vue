@@ -1,9 +1,10 @@
 <template>
   <li>
-    <div 
-      :style="{ paddingLeft: `${14 * depth}px`}"
-      class="item">
-      <div 
+    <div
+      :style="{ paddingLeft: `${14 * depth}px` }"
+      class="item"
+      @click="$router.push(`/workspaces/${workspace.id}`)">
+      <div
         :class="{ active: showChildren }"
         class="icon"
         @click="showChildren = !showChildren">
@@ -12,7 +13,9 @@
       <div class="title">
         {{ workspace.title || '제목 없음!' }}
       </div>
-      <div class="actions">
+      <div 
+        class="actions"
+        @click="createWorkspace">
         <div class="icon">
           <i class="fa-solid fa-plus"></i>
         </div>
@@ -21,28 +24,28 @@
         </div>
       </div>
     </div>
-    <div 
-      v-if="!workspace.children && showChildren" 
-      :style="{ paddingLeft: `${14 * depth + 32}px`}"
+    <div
+      v-if="!workspace.children && showChildren"
+      :style="{ paddingLeft: `${14 * depth + 32}px` }"
       class="item no-children">
       <div class="title">
         하위 페이지가 없습니다.
       </div>
     </div>
-    <!-- 컴포넌트 재귀 호출 -->
-    <ul 
-      v-if="workspace.children && showChildren">
-      <!-- api에 따라 workspace.children?.length 사용 -->
-      <WorkspaceItem 
+    <ul v-if="workspace.children && showChildren">
+      <WorkspaceItem
         v-for="ws in workspace.children"
         :key="ws.id"
-        :workspace="ws" 
+        :workspace="ws"
         :depth="depth + 1" />
     </ul>
   </li>
 </template>
 
 <script>
+import { mapStores } from 'pinia'
+import { useWorkspaceStore } from '~/store/workspace'
+
 export default {
   props: {
     workspace: {
@@ -51,12 +54,21 @@ export default {
     },
     depth: {
       type: Number,
-      default: 0
+      default: 0  
     }
   },
   data() {
     return {
       showChildren: false
+    }
+  },
+  computed: {
+    ...mapStores(useWorkspaceStore)
+  },
+  methods: {
+    async createWorkspace() {
+      const workspace = await this.workspaceStore.createWorkspace()
+      this.$router.push(`/workspaces/${workspace.id}`)
     }
   }
 }
@@ -129,5 +141,5 @@ li {
       align-items: center;
     }
   }
-}  
+}
 </style>

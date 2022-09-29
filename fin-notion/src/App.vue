@@ -1,10 +1,9 @@
-<template>
+<template> 
   <main>
     <LNB />
     <div class="workspace">
-      <header></header>
+      <TheHeader />
       <div class="workspace__contents">
-        <!-- BEM 표기법 부모의 일부분임을 의미하는 표기법. __ : 일부분, -- : 상태 -->
         <RouterView />
       </div>
     </div>
@@ -13,18 +12,21 @@
 
 <script>
 import { mapStores } from 'pinia'
-import { useWorkspaceStore } from './store/workspace'
-import LNB from './components/LNB.vue'
+import { useWorkspaceStore } from '~/store/workspace'
+import LNB from '~/components/LNB.vue'
+import TheHeader from '~/components/TheHeader.vue'
 
 export default {
   components: {
-    LNB
-  },
+    LNB,
+    TheHeader
+  },  
   computed: {
     ...mapStores(useWorkspaceStore)
   },
-  created() {
-    this.workspaceStore.readWorkspaces()
+  async created() {
+    await this.workspaceStore.readWorkspaces()
+    this.workspaceStore.findWorkspacePath(this.$route.params.id)
   }
 }
 </script>
@@ -32,9 +34,9 @@ export default {
 <style scoped lang="scss">
 main {
   display: flex;
-  height: 100vh; 
+  height: 100vh;
   .workspace {
     flex-grow: 1;
-  } 
+  }
 }
 </style>
